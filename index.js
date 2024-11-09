@@ -83,15 +83,31 @@ app.post("/users", async(req, res) => {
   }
 })
 
-app.delete("/users/:id", (req, res) => {
-    console.log(req.params.id); 
+app.delete("/users/:id", async (req, res) => {
+  const { id } = req.params; // Obtienes el id del usuario desde los parámetros de la URL
 
-    // db = db.filter((user) => user.id != req.params.id);
+  try {
+      // Ejecuta la consulta SQL para eliminar el usuario por su id
+      const result = await turso.execute("DELETE FROM contacts WHERE contact_id = ?", [id]);
 
-    res.json({
-        mensaje: "Usuario eliminado"
-    });
+      if (result.affectedRows === 0) {
+          return res.status(404).json({
+              mensaje: "Usuario no encontrado"
+          });
+      }
+
+      // Si la eliminación fue exitosa, respondemos con un mensaje
+      res.json({
+          mensaje: "Usuario eliminado"
+      });
+  } catch (error) {
+      console.error("Error al eliminar el usuario:", error);
+      res.status(500).json({
+          mensaje: "Error interno al eliminar el usuario"
+      });
+  }
 });
+
 
 // //todo: obtener un usuario por id
 
