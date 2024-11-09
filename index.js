@@ -22,7 +22,7 @@ const turso = createClient({
 
 const corsOptions = {
   origin: '*',
-  methods: ['GET', 'POST', 'DELETE'],
+  methods: ['GET', 'POST', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
@@ -82,6 +82,34 @@ app.post("/users", async(req, res) => {
     });
   }
 })
+
+app.patch("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  const { first_name, last_name, email, phone } = req.body; 
+
+  if (!first_name || !last_name || !email || !phone) {
+    return res.status(400).json({ mensaje: "Todos los campos son obligatorios" });
+  }
+
+  try {
+    const result = await turso.execute(
+      `UPDATE contacts SET first_name = ?, last_name = ?, email = ?, phone = ? WHERE contact_id = ?`,
+      [first_name, last_name, email, phone, id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+    res.json({
+      mensaje: "Usuario actualizado",
+    });
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+    res.status(500).json({
+      mensaje: "Error interno al actualizar el usuario",
+    });
+  }
+});
 
 app.delete("/users/:id", async (req, res) => {
   const { id } = req.params; // Obtienes el id del usuario desde los parámetros de la URL
