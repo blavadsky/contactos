@@ -21,7 +21,7 @@ const turso = createClient({
 
 
 const corsOptions = {
-  origin: 'http://127.0.0.1:5500/',
+  origin: '*',
   methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
