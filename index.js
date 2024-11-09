@@ -49,8 +49,8 @@ app.get("/users", async(req, res) => {
 app.get("/users/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await turso.execute(`SELECT * FROM contacts WHERE id = ?`, [id]);
-
+    const result = await turso.execute(`SELECT * FROM contacts WHERE contact_id = ?`, [id]);
+    
     if (result.rows.length === 0) {
       return res.status(404).json({ mensaje: "Usuario no encontrado" });
     }
