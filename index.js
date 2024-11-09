@@ -31,10 +31,6 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 
-
-//const { TURSO_AUTH_TOKEN ="libsql://dbweb-blavadsky.turso.io", TURSO_DATABASE_URL ="eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJnaWQiOiI5Zjc3NTFhNi1jYTZmLTQ2MzItYTgxYS1hZTc0NGNiNmVjYTEiLCJpYXQiOjE3MjkzMDUxNjV9.VotboVZbauNsLgHLyk7OswVjYoVvrgxuUIM2BL6jsVMT7f72AaM7sUlqm6YXbS0-yThNrf6IWwiv_5LMIZovCg" } = process.env;
-
-
 app.get('/', async(req, res) => {
   const ans2 = await turso.execute(`SELECT * FROM contacts`);
     console.log(ans2);
@@ -49,6 +45,21 @@ app.get("/users", async(req, res) => {
     res.json( ans.rows )
 });
 
+
+app.get("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await turso.execute(`SELECT * FROM contacts WHERE id = ?`, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado" });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error al obtener el usuario:", error);
+    res.status(500).json({ mensaje: "Error interno al obtener el usuario" });
+  }
+});
 
 
 app.post("/users", async(req, res) => {
