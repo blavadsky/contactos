@@ -3,7 +3,7 @@ import { createClient } from "@libsql/client";
 import cors from 'cors';
 
 const app = express();
-const port = parseInt(process.env.PORT) || 4200;
+const port = parseInt(process.env.PORT) || 3000;
 
 const TURSO_DATABASE_URL="libsql://dbweb-blavadsky.turso.io";
 const TURSO_AUTH_TOKEN="eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJnaWQiOiI5Zjc3NTFhNi1jYTZmLTQ2MzItYTgxYS1hZTc0NGNiNmVjYTEiLCJpYXQiOjE3MjkzMDUxNjV9.VotboVZbauNsLgHLyk7OswVjYoVvrgxuUIM2BL6jsVMT7f72AaM7sUlqm6YXbS0-yThNrf6IWwiv_5LMIZovCg"
