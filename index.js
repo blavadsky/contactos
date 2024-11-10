@@ -1,22 +1,24 @@
 import express from "express";
 import { createClient } from "@libsql/client";
 import cors from 'cors';
+import dotenv from 'dotenv';
+
 
 const app = express();
 const port = parseInt(process.env.PORT) || 3000;
+dotenv.config();
 
-const TURSO_DATABASE_URL="libsql://dbweb-blavadsky.turso.io";
-const TURSO_AUTH_TOKEN="eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJnaWQiOiI5Zjc3NTFhNi1jYTZmLTQ2MzItYTgxYS1hZTc0NGNiNmVjYTEiLCJpYXQiOjE3MjkzMDUxNjV9.VotboVZbauNsLgHLyk7OswVjYoVvrgxuUIM2BL6jsVMT7f72AaM7sUlqm6YXbS0-yThNrf6IWwiv_5LMIZovCg"
+const url = process.env.TURSO_DATABASE_URL;
+const authToken = process.env.TURSO_AUTH_TOKEN;
 
-
-if (!TURSO_AUTH_TOKEN || !TURSO_DATABASE_URL) {
+if (!authToken || !url) {
   throw new Error("TURSO_AUTH_TOKEN and TURSO_DATABASE_URL must be set");
 }
 
 
 const turso = createClient({
-  url: TURSO_DATABASE_URL,
-  authToken: TURSO_AUTH_TOKEN,
+  url,
+  authToken,
 });
 
 
@@ -39,7 +41,6 @@ app.get('/', async(req, res) => {
 
 
 app.get("/users", async(req, res) => {
-    //"Select * from users"
     const ans = await turso.execute(`SELECT * FROM contacts`);
     console.log(ans);
     res.json( ans.rows )
@@ -112,10 +113,9 @@ app.patch("/users/:id", async (req, res) => {
 });
 
 app.delete("/users/:id", async (req, res) => {
-  const { id } = req.params; // Obtienes el id del usuario desde los parámetros de la URL
+  const { id } = req.params;
 
   try {
-      // Ejecuta la consulta SQL para eliminar el usuario por su id
       const result = await turso.execute("DELETE FROM contacts WHERE contact_id = ?", [id]);
 
       if (result.affectedRows === 0) {
@@ -123,8 +123,6 @@ app.delete("/users/:id", async (req, res) => {
               mensaje: "Usuario no encontrado"
           });
       }
-
-      // Si la eliminación fue exitosa, respondemos con un mensaje
       res.json({
           mensaje: "Usuario eliminado"
       });

@@ -1,0 +1,22 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Archivos de configuración locales
+.env
+.env.*
+
+# Archivos de sistema
+.DS_Store         # Para macOS
+Thumbs.db          # Para Windows
+
+# Directorios de build o dist
+dist/
+build/
+
+# Archivos de editores
+.vscode/
+*.sublime-workspace
+*.sublime-project
